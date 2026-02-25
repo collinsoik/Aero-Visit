@@ -102,49 +102,6 @@ main {
   z-index: 2;
 }
 
-.tunnel-controls label {
-  font-family: "Fredoka One", cursive;
-  font-size: 0.9rem;
-  white-space: nowrap;
-}
-
-/* ---- SLIDER ---- */
-input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 120px;
-  height: 8px;
-  border-radius: 4px;
-  background: rgba(255,255,255,0.2);
-  outline: none;
-  cursor: pointer;
-}
-
-.section-blue input[type="range"] { background: linear-gradient(90deg, rgba(79,195,247,0.3), #4FC3F7); }
-.section-green input[type="range"] { background: linear-gradient(90deg, rgba(107,203,119,0.3), #6BCB77); }
-.section-red input[type="range"] { background: linear-gradient(90deg, rgba(255,107,107,0.3), #FF6B6B); }
-
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #FFD93D;
-  cursor: pointer;
-  box-shadow: 0 0 10px rgba(255,217,61,0.6);
-  border: 2px solid #fff;
-}
-
-input[type="range"]::-moz-range-thumb {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: #FFD93D;
-  cursor: pointer;
-  box-shadow: 0 0 10px rgba(255,217,61,0.6);
-  border: 2px solid #fff;
-}
-
 /* ---- LAUNCH BUTTON ---- */
 .launch-btn {
   background: linear-gradient(135deg, #FF6B6B, #FFD93D);

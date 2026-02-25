@@ -20,7 +20,7 @@ class Streamline {
     this.y = this.baseY;
     this.opacity = 0.25 + Math.random() * 0.45;
     this.thickness = 1 + Math.random() * 2;
-    this.speed = 0.8 + Math.random() * 1.2;
+    this.speed = 0.35 + Math.random() * 0.5;
     this.r = 120; this.g = 180; this.b = 255;
     this.maxPoints = 40 + Math.floor(Math.random() * 30);
   }
@@ -368,21 +368,21 @@ class PaperAirplane {
 
   react(windSpeed) {
     if (this.launched) return;
-    const t = performance.now() / 1000;
+    const t = performance.now() / 2000; // halved speed for gentler motion
     const w = windSpeed / 10;
 
     if (this.type === 'dart') {
-      this.angle = Math.sin(t * 1.5) * 0.015 * windSpeed;
-      this.x = this.homeX + Math.sin(t * 0.8) * 1.5;
-      this.y = this.homeY + Math.sin(t * 1.2) * 1;
+      this.angle = Math.sin(t * 1.5) * 0.01 * windSpeed;
+      this.x = this.homeX + Math.sin(t * 0.6) * 1;
+      this.y = this.homeY + Math.sin(t * 0.8) * 0.8;
     } else if (this.type === 'glider') {
-      this.angle = -0.05 * w + Math.sin(t * 0.6) * 0.02;
-      this.x = this.homeX + Math.sin(t * 0.5) * 2;
-      this.y = this.homeY - windSpeed * 4 + Math.sin(t * 0.9) * 3;
+      this.angle = -0.04 * w + Math.sin(t * 0.4) * 0.015;
+      this.x = this.homeX + Math.sin(t * 0.35) * 1.5;
+      this.y = this.homeY - windSpeed * 3 + Math.sin(t * 0.6) * 2;
     } else {
-      this.angle = Math.sin(t * 3.5) * 0.12 * w + Math.sin(t * 5) * 0.04 * windSpeed;
-      this.x = this.homeX + windSpeed * 2.5 + Math.sin(t * 2) * 3;
-      this.y = this.homeY + Math.sin(t * 1.8) * 4 * w;
+      this.angle = Math.sin(t * 2) * 0.08 * w + Math.sin(t * 3) * 0.025 * windSpeed;
+      this.x = this.homeX + windSpeed * 2 + Math.sin(t * 1.2) * 2;
+      this.y = this.homeY + Math.sin(t * 1) * 3 * w;
     }
   }
 
@@ -397,11 +397,11 @@ class PaperAirplane {
     // Real physics: velocity, forces
     // Initial throw gives forward velocity
     if (this.type === 'dart') {
-      this.vx = 5.5;  this.vy = -0.3;
+      this.vx = 3.0;  this.vy = -0.2;
     } else if (this.type === 'glider') {
-      this.vx = 3.5;  this.vy = -0.5;
+      this.vx = 2.0;  this.vy = -0.3;
     } else {
-      this.vx = 3.0;  this.vy = 0;
+      this.vx = 1.8;  this.vy = 0;
     }
     this.angularVel = 0;
   }
@@ -492,7 +492,7 @@ class WindTunnel {
     if (!this.canvas) return;
     this.ctx = this.canvas.getContext('2d');
     this.type = type;
-    this.windSpeed = 3;
+    this.windSpeed = 10;
     this.hovered = false;
     this.visible = true;
     this.sparkles = [];
@@ -615,11 +615,6 @@ class WindTunnel {
 
     ctx.save();
 
-    // Shake at max wind
-    if (this.windSpeed >= 10) {
-      ctx.translate((Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3);
-    }
-
     // Background
     this._drawBackground();
 
@@ -633,9 +628,6 @@ class WindTunnel {
     if (this.airplane.launched) this.airplane.updateLaunch(this.windSpeed);
     else this.airplane.react(this.windSpeed);
     this.airplane.draw(ctx, this.windSpeed, this.hovered);
-
-    // Wind gauge
-    this._drawWindGauge();
 
     // Sparkles
     for (let i = this.sparkles.length - 1; i >= 0; i--) {
@@ -661,22 +653,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const glider = new WindTunnel('tunnel-glider', 'glider');
   const tumbler = new WindTunnel('tunnel-tumbler', 'tumbler');
   const all = [dart, glider, tumbler].filter(t => t.canvas);
-
-  // Sliders
-  [
-    { s: 'speed-dart', l: 'speed-dart-value', t: dart },
-    { s: 'speed-glider', l: 'speed-glider-value', t: glider },
-    { s: 'speed-tumbler', l: 'speed-tumbler-value', t: tumbler },
-  ].forEach(({ s, l, t }) => {
-    const sl = document.getElementById(s);
-    if (!sl || !t.canvas) return;
-    sl.addEventListener('input', e => {
-      const v = parseInt(e.target.value, 10);
-      t.setWindSpeed(v);
-      const lb = document.getElementById(l);
-      if (lb) lb.textContent = v;
-    });
-  });
 
   // Launch buttons
   [
