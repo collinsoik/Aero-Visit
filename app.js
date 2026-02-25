@@ -524,10 +524,10 @@ class WindTunnel {
 
   _buildStreamlines() {
     const h = this.canvas._displayH || 420;
-    const count = 55; // dense set of flow lines
+    const count = 200;
     this.streamlines = [];
     for (let i = 0; i < count; i++) {
-      const y = 25 + (i / (count - 1)) * (h - 50);
+      const y = 25 + Math.random() * (h - 50);
       this.streamlines.push(new Streamline(this.canvas, y));
     }
   }
