@@ -35,26 +35,25 @@ class Streamline {
     let dx = spd;
     let dy = 0;
 
-    // Get airplane collision shape
+    // Get airplane collision shape - tight to the body
     const px = plane.x, py = plane.y;
-    const pw = plane.width * 1.2, ph = plane.height * 1.2;
+    const pw = plane.width * 0.55, ph = plane.height * 0.55;
     const relX = this.x - px;
     const relY = this.y - py;
     const dist = Math.sqrt(relX * relX + relY * relY);
     const inZone = Math.abs(relX) < pw && Math.abs(relY) < ph;
-    const approaching = relX < pw * 0.3 && relX > -pw * 1.5;
-    const nearBody = Math.abs(relY) < ph * 1.3;
+    const approaching = relX < pw * 0.15 && relX > -pw * 0.6;
+    const nearBody = Math.abs(relY) < ph * 0.7;
 
     if (type === 'dart') {
-      // LAMINAR FLOW - smooth deflection around narrow body
+      // LAMINAR FLOW - tight smooth deflection around narrow body
       if (inZone || (approaching && nearBody)) {
-        const deflectRadius = pw * 0.8;
+        const deflectRadius = pw * 0.45;
         if (dist < deflectRadius && dist > 0) {
-          const pushStrength = (1 - dist / deflectRadius) * 2.5;
+          const pushStrength = (1 - dist / deflectRadius) * 3.5;
           dy += (relY > 0 ? 1 : -1) * pushStrength * spd;
-          dx *= 0.85;
+          dx *= 0.8;
         }
-        // Slight acceleration past the tail (low drag)
         if (relX > 0) dx *= 1.1;
         this.r = 100; this.g = 200; this.b = 255;
       } else {
@@ -62,27 +61,24 @@ class Streamline {
       }
 
     } else if (type === 'glider') {
-      // LIFT FLOW - air curves up under wide wings, downwash above
-      const wingSpan = ph * 1.5;
-      const nearWings = Math.abs(relX) < pw * 0.9 && Math.abs(relY) < wingSpan;
+      // LIFT FLOW - tight to the wide wings
+      const wingSpan = ph * 0.7;
+      const nearWings = Math.abs(relX) < pw * 0.5 && Math.abs(relY) < wingSpan;
 
       if (nearWings || (approaching && Math.abs(relY) < wingSpan)) {
-        const deflectRadius = Math.max(pw, ph) * 1.2;
+        const deflectRadius = Math.max(pw, ph) * 0.55;
         if (dist < deflectRadius && dist > 0) {
-          const pushStrength = (1 - dist / deflectRadius) * 3;
-          // Below wings: strong upward deflection (LIFT!)
+          const pushStrength = (1 - dist / deflectRadius) * 4;
           if (relY > 0) {
-            dy -= pushStrength * spd * 1.2;
-            this.r = 50; this.g = 230; this.b = 100; // green = lift
+            dy -= pushStrength * spd * 1.4;
+            this.r = 50; this.g = 230; this.b = 100;
           } else {
-            // Above: slight downwash
-            dy += pushStrength * spd * 0.4;
+            dy += pushStrength * spd * 0.5;
             this.r = 100; this.g = 200; this.b = 255;
           }
-          dx *= 0.8;
+          dx *= 0.75;
         }
-        if (relX > pw * 0.3) {
-          // Upwash behind trailing edge
+        if (relX > pw * 0.15) {
           dy -= 0.3 * spd;
           this.r = 80; this.g = 220; this.b = 120;
         }
@@ -91,20 +87,18 @@ class Streamline {
       }
 
     } else if (type === 'tumbler') {
-      // HIGH DRAG - air piles up in front, chaotic turbulent wake behind
-      const bluntRadius = Math.max(pw, ph) * 1.5;
-      const nearFront = relX > -pw * 1.5 && relX < pw * 0.5;
+      // HIGH DRAG - tight pile-up right at the blunt face
+      const bluntRadius = Math.max(pw, ph) * 0.7;
+      const nearFront = relX > -pw * 0.6 && relX < pw * 0.25;
 
       if ((nearFront && nearBody) || dist < bluntRadius) {
         if (relX < 0) {
-          // In front: SLOW DOWN hard, scatter outward
-          dx *= 0.2;
-          const scatter = (1 - dist / bluntRadius) * 4;
+          dx *= 0.15;
+          const scatter = (1 - dist / bluntRadius) * 5;
           dy += (relY > 0 ? 1 : -1) * scatter * spd;
-          this.r = 255; this.g = 100; this.b = 60; // red = drag
+          this.r = 255; this.g = 100; this.b = 60;
         } else {
-          // Behind: turbulent wake - random chaotic motion
-          dx *= 0.6;
+          dx *= 0.5;
           dy += (Math.sin(performance.now() / 80 + this.baseY * 0.1) * 3 +
                  (Math.random() - 0.5) * 4) * (windSpeed / 5);
           this.r = 255; this.g = 140; this.b = 80;
@@ -386,39 +380,88 @@ class PaperAirplane {
     }
   }
 
-  launch(tunnelW) {
+  launch(tunnelW, windSpeed) {
     if (this.launched) return;
     this.launched = true;
-    this.launchProgress = 0;
     this.launchPhase = 'fly';
     this.bounceProgress = 0;
     this._tw = tunnelW;
-    this._sx = this.x;
-    this._sy = this.y;
+    this._windSpeed = windSpeed;
+
+    // Real physics: velocity, forces
+    // Initial throw gives forward velocity
+    if (this.type === 'dart') {
+      this.vx = 5.5;  this.vy = -0.3;
+    } else if (this.type === 'glider') {
+      this.vx = 3.5;  this.vy = -0.5;
+    } else {
+      this.vx = 3.0;  this.vy = 0;
+    }
+    this.angularVel = 0;
   }
 
-  updateLaunch() {
+  updateLaunch(windSpeed) {
     if (!this.launched) return false;
+
     if (this.launchPhase === 'fly') {
-      const rate = this.type === 'dart' ? 0.024 : this.type === 'glider' ? 0.015 : 0.008;
-      this.launchProgress += rate;
-      const p = this.launchProgress;
+      const w = (windSpeed || this._windSpeed) / 10; // normalized 0-1
+      const gravity = 0.04;
+
       if (this.type === 'dart') {
-        this.x = this._sx + p * (this._tw + 40);
-        this.y = this._sy + Math.sin(p * Math.PI) * -5;
-        this.angle = 0;
+        // LOW DRAG: barely slows, very stable, slight gravity
+        const drag = 0.002;
+        this.vx -= drag * this.vx * Math.abs(this.vx); // drag opposes motion
+        this.vx += w * 0.08; // wind pushes it along
+        this.vy += gravity * 0.3; // very little drop
+        this.vy *= 0.97; // dampen vertical wobble
+        this.angularVel = (this.vy * 0.01); // nose follows velocity
+        this.angle += this.angularVel;
+        this.angle *= 0.95; // stabilizes quickly (streamlined)
       } else if (this.type === 'glider') {
-        this.x = this._sx + p * (this._tw + 40);
-        this.y = this._sy + Math.sin(p * Math.PI) * -60;
-        this.angle = -Math.sin(p * Math.PI) * 0.18;
+        // HIGH LIFT: wind under wings pushes up, moderate drag
+        const drag = 0.006;
+        const lift = w * 0.18; // strong lift from wind
+        this.vx -= drag * this.vx * Math.abs(this.vx);
+        this.vx += w * 0.04;
+        this.vy += gravity; // gravity pulls down
+        this.vy -= lift;    // but lift pushes up!
+        this.vy *= 0.96;
+        // Float up then gently descend as it moves through
+        this.angularVel = this.vy * 0.015;
+        this.angle += this.angularVel;
+        this.angle *= 0.93;
       } else {
-        this.x = this._sx + p * (this._tw + 40);
-        this.y = this._sy + p * 30 + Math.sin(p * Math.PI * 6) * 10;
-        this.angle = Math.sin(p * Math.PI * 8) * 0.3;
+        // HIGH DRAG: massive slowdown, drops fast, wobbles hard
+        const drag = 0.02;
+        this.vx -= drag * this.vx * Math.abs(this.vx);
+        this.vx += w * 0.02; // wind barely helps
+        this.vy += gravity * 1.5; // heavy drop
+        this.vy *= 0.98;
+        // Chaotic wobble
+        this.angularVel += (Math.random() - 0.5) * 0.02 * (1 + w * 3);
+        this.angularVel *= 0.92;
+        this.angle += this.angularVel;
       }
-      if (this.launchProgress >= 1) { this.launchPhase = 'bounce'; this.bounceProgress = 0; }
+
+      // Minimum forward speed so it eventually crosses
+      if (this.vx < 0.4) this.vx = 0.4;
+
+      this.x += this.vx;
+      this.y += this.vy;
+
+      // Bounce off tunnel walls
+      const h = this._tw ? 420 : 350; // approximate tunnel height
+      if (this.y < 30) { this.y = 30; this.vy = Math.abs(this.vy) * 0.5; }
+      if (this.y > h - 30) { this.y = h - 30; this.vy = -Math.abs(this.vy) * 0.5; }
+
+      // Transition to bounce-back when it exits the right side
+      if (this.x > this._tw + 50) {
+        this.launchPhase = 'bounce';
+        this.bounceProgress = 0;
+      }
     } else {
-      this.bounceProgress += 0.04;
+      // Bounce back to home
+      this.bounceProgress += 0.035;
       const bp = Math.min(this.bounceProgress, 1);
       const ease = 1 - Math.pow(1 - bp, 3);
       const overshoot = Math.sin(bp * Math.PI * 3) * (1 - bp) * 12;
@@ -581,7 +624,7 @@ class WindTunnel {
     }
 
     // Airplane
-    if (this.airplane.launched) this.airplane.updateLaunch();
+    if (this.airplane.launched) this.airplane.updateLaunch(this.windSpeed);
     else this.airplane.react(this.windSpeed);
     this.airplane.draw(ctx, this.windSpeed, this.hovered);
 
@@ -639,7 +682,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!btn || !t.canvas) return;
     btn.addEventListener('click', () => {
       if (t.airplane.launched) return;
-      t.airplane.launch(t.canvas._displayW);
+      t.airplane.launch(t.canvas._displayW, t.windSpeed);
       t.spawnSparkles();
       const orig = btn.textContent;
       btn.textContent = 'Whoooosh!';
