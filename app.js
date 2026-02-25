@@ -521,12 +521,17 @@ class WindTunnel {
   }
 
   _buildStreamlines() {
+    const w = this.canvas._displayW || 600;
     const h = this.canvas._displayH || 420;
     const count = 350;
     this.streamlines = [];
     for (let i = 0; i < count; i++) {
       const y = 25 + Math.random() * (h - 50);
-      this.streamlines.push(new Streamline(this.canvas, y));
+      const sl = new Streamline(this.canvas, y);
+      // Scatter across the full width so wind is already flowing on load
+      sl.x = Math.random() * w;
+      sl.y = y;
+      this.streamlines.push(sl);
     }
   }
 
