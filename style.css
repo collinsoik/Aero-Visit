@@ -1,0 +1,775 @@
+/* ============================================
+   Aero Visit - Kid-Friendly Aerodynamics CSS
+   A bright, cartoonish site for 2nd graders!
+   ============================================ */
+
+/* ---------- RESET & GLOBAL STYLES ---------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Nunito", sans-serif;
+  background: linear-gradient(180deg, #F0F9FF 0%, #FFFFFF 100%);
+  min-height: 100vh;
+  color: #2D3436;
+  overflow-x: hidden;
+}
+
+/* ---------- ANIMATIONS ---------- */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes cloudDrift {
+  0% {
+    transform: translateX(-20px);
+  }
+  50% {
+    transform: translateX(20px);
+  }
+  100% {
+    transform: translateX(-20px);
+  }
+}
+
+/* ---------- HEADER ---------- */
+.site-header {
+  background: linear-gradient(135deg, #4FC3F7 0%, #A66CFF 100%);
+  color: #FFFFFF;
+  text-align: center;
+  padding: 3rem 2rem 4rem;
+  border-radius: 0 0 40px 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Floating cloud - left side */
+.site-header::before {
+  content: "\2601";
+  position: absolute;
+  top: 18px;
+  left: 8%;
+  font-size: 3.5rem;
+  opacity: 0.3;
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Floating cloud - right side */
+.site-header::after {
+  content: "\2601";
+  position: absolute;
+  top: 40px;
+  right: 10%;
+  font-size: 2.5rem;
+  opacity: 0.25;
+  animation: float 5s ease-in-out infinite 1s;
+}
+
+.site-title {
+  font-family: "Fredoka One", cursive;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  text-shadow: 3px 3px 0px #FF6B6B, 6px 6px 0px rgba(255, 107, 107, 0.25);
+  margin-bottom: 0.5rem;
+  position: relative;
+  z-index: 1;
+}
+
+.site-subtitle {
+  font-family: "Nunito", sans-serif;
+  font-size: clamp(1rem, 2.5vw, 1.4rem);
+  font-weight: 600;
+  opacity: 0.92;
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- MAIN CONTENT ---------- */
+main {
+  padding: 2rem 1rem;
+}
+
+/* ---------- TUNNEL SECTIONS ---------- */
+.tunnel-section {
+  max-width: 1100px;
+  margin: 0 auto 3rem;
+  background: #FFFFFF;
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(79, 195, 247, 0.15);
+  padding: 2rem;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* The inner layout holding info-card + tunnel-wrapper side by side */
+.tunnel-layout {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+
+/* Section heading above the layout */
+.section-heading {
+  font-family: "Fredoka One", cursive;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.section-blue .section-heading { color: #4FC3F7; }
+.section-green .section-heading { color: #6BCB77; }
+.section-red .section-heading { color: #FF6B6B; }
+
+/* Section badge (emoji concept badge) */
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.badge-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+}
+
+.section-blue .badge-icon { background: #E3F6FD; }
+.section-green .badge-icon { background: #E8F8EC; }
+.section-red .badge-icon { background: #FFE8E8; }
+
+.badge-label {
+  font-family: "Fredoka One", cursive;
+  font-size: 1.1rem;
+}
+
+.section-blue .badge-label { color: #4FC3F7; }
+.section-green .badge-label { color: #6BCB77; }
+.section-red .badge-label { color: #FF6B6B; }
+
+.tunnel-section:hover {
+  transform: scale(1.02);
+  box-shadow: 0 12px 40px rgba(79, 195, 247, 0.25);
+}
+
+/* Distinct left border colors per section */
+.tunnel-section.section-blue {
+  border-left: 6px solid #4FC3F7;
+}
+
+.tunnel-section.section-green {
+  border-left: 6px solid #6BCB77;
+}
+
+.tunnel-section.section-red {
+  border-left: 6px solid #FF6B6B;
+}
+
+/* ---------- INFO CARD ---------- */
+.info-card {
+  flex: 0 0 280px;
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.info-card h2,
+.info-card h3,
+.info-card__name {
+  font-family: "Fredoka One", cursive;
+  font-size: 1.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.info-card p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: #2D3436;
+}
+
+/* Theme tints for info cards */
+.section-blue .info-card {
+  background: #E3F6FD;
+}
+
+.section-blue .info-card h2,
+.section-blue .info-card h3 {
+  color: #4FC3F7;
+}
+
+.section-green .info-card {
+  background: #E8F8EC;
+}
+
+.section-green .info-card h2,
+.section-green .info-card h3 {
+  color: #6BCB77;
+}
+
+.section-red .info-card {
+  background: #FFE8E8;
+}
+
+.section-red .info-card h2,
+.section-red .info-card h3 {
+  color: #FF6B6B;
+}
+
+/* Fun Fact Box */
+.fun-fact {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 3px dashed;
+  border-radius: 14px;
+  position: relative;
+}
+
+.fun-fact-label {
+  font-family: "Fredoka One", cursive;
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.fun-fact p,
+.fun-fact__text {
+  font-size: 1rem;
+}
+
+.fun-fact__icon {
+  font-size: 1.3rem;
+  margin-right: 0.3rem;
+  vertical-align: middle;
+}
+
+.section-blue .fun-fact {
+  border-color: #4FC3F7;
+  background: #F0F9FF;
+}
+
+.section-blue .fun-fact-label {
+  color: #4FC3F7;
+}
+
+.section-green .fun-fact {
+  border-color: #6BCB77;
+  background: #F2FBF4;
+}
+
+.section-green .fun-fact-label {
+  color: #6BCB77;
+}
+
+.section-red .fun-fact {
+  border-color: #FF6B6B;
+  background: #FFF5F5;
+}
+
+.section-red .fun-fact-label {
+  color: #FF6B6B;
+}
+
+/* ---------- CONCEPT BADGE ---------- */
+.concept-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.section-blue .concept-badge {
+  background: #4FC3F7;
+}
+
+.section-green .concept-badge {
+  background: #6BCB77;
+}
+
+.section-red .concept-badge {
+  background: #FF6B6B;
+}
+
+/* ---------- TUNNEL WRAPPER ---------- */
+.tunnel-wrapper {
+  flex: 1;
+  position: relative;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #E8E8E8 0%, #F8F8F8 15%, #FDFDFD 50%, #F8F8F8 85%, #E8E8E8 100%);
+  overflow: hidden;
+  box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.06);
+}
+
+.tunnel-wrapper canvas {
+  display: block;
+  width: 100%;
+  border-radius: 16px;
+}
+
+/* ---------- TUNNEL CONTROLS ---------- */
+.tunnel-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+/* ---------- RANGE SLIDER ---------- */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 200px;
+  height: 12px;
+  border-radius: 6px;
+  outline: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+/* Slider backgrounds per section */
+.section-blue input[type="range"] {
+  background: linear-gradient(90deg, #E3F6FD, #4FC3F7);
+}
+
+.section-green input[type="range"] {
+  background: linear-gradient(90deg, #E8F8EC, #6BCB77);
+}
+
+.section-red input[type="range"] {
+  background: linear-gradient(90deg, #FFE8E8, #FF6B6B);
+}
+
+/* Slider thumb - WebKit */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #FFD93D;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(255, 217, 61, 0.5);
+  border: 3px solid #FFFFFF;
+  transition: transform 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* Slider thumb - Firefox */
+input[type="range"]::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #FFD93D;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(255, 217, 61, 0.5);
+  border: 3px solid #FFFFFF;
+  transition: transform 0.2s ease;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  transform: scale(1.2);
+}
+
+/* Slider track - Firefox */
+input[type="range"]::-moz-range-track {
+  height: 12px;
+  border-radius: 6px;
+}
+
+/* ---------- LAUNCH BUTTON ---------- */
+.launch-btn {
+  background: linear-gradient(135deg, #FF6B6B 0%, #FFD93D 100%);
+  color: #FFFFFF;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 50px;
+  font-family: "Fredoka One", cursive;
+  font-size: 1.1rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+  transition: all 0.3s ease;
+  animation: pulse 2s ease-in-out infinite;
+  position: relative;
+  overflow: hidden;
+}
+
+.launch-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.55);
+}
+
+.launch-btn:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+  animation: none;
+}
+
+/* ---------- SPEED LABEL ---------- */
+.speed-label {
+  font-family: "Fredoka One", cursive;
+  font-size: 1rem;
+}
+
+.section-blue .speed-label {
+  color: #4FC3F7;
+}
+
+.section-green .speed-label {
+  color: #6BCB77;
+}
+
+.section-red .speed-label {
+  color: #FF6B6B;
+}
+
+/* ---------- RECAP SECTION ---------- */
+.recap-section {
+  max-width: 800px;
+  margin: 3rem auto;
+  background: linear-gradient(135deg, #F0F9FF 0%, #FFF8E1 100%);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 30px rgba(166, 108, 255, 0.12);
+}
+
+.recap-section h2 {
+  font-family: "Fredoka One", cursive;
+  font-size: 2rem;
+  color: #A66CFF;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.recap-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.recap-section ul li {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  padding: 0.5rem 0;
+  padding-left: 0.5rem;
+  border-bottom: 2px dashed #E8E8E8;
+}
+
+.recap-section ul li:last-child {
+  border-bottom: none;
+}
+
+.recap-section ul li .emoji,
+.recap-icon {
+  font-size: 1.5rem;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+}
+
+.recap-title {
+  font-family: "Fredoka One", cursive;
+  font-size: 2rem;
+  color: #A66CFF;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.speed-value {
+  font-weight: 700;
+}
+
+/* ---------- LEGEND / KEY ---------- */
+.legend,
+.legend-card {
+  max-width: 600px;
+  margin: 2rem auto;
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 16px rgba(79, 195, 247, 0.1);
+}
+
+.legend-title,
+.legend-card h3 {
+  font-family: "Fredoka One", cursive;
+  font-size: 1.3rem;
+  color: #2D3436;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.legend-list,
+.legend-items {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+}
+
+.legend-list li,
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.legend-swatch {
+  width: 28px;
+  height: 12px;
+  border-radius: 6px;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.legend-swatch.swatch-blue,
+.legend-swatch--wind {
+  background: #999;
+}
+
+.legend-swatch.swatch-red,
+.legend-swatch--drag {
+  background: #FF6B6B;
+}
+
+.legend-swatch.swatch-green,
+.legend-swatch--lift {
+  background: #6BCB77;
+}
+
+.legend-swatch.swatch-yellow {
+  background: #FFD93D;
+}
+
+.legend-swatch.swatch-purple,
+.legend-swatch--plane {
+  background: #4FC3F7;
+}
+
+/* ---------- FOOTER ---------- */
+.site-footer {
+  text-align: center;
+  padding: 2rem;
+  font-family: "Fredoka One", cursive;
+  color: #B0BEC5;
+  font-size: 1rem;
+}
+
+.site-footer a {
+  color: #4FC3F7;
+  text-decoration: none;
+}
+
+.site-footer a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- UTILITY CLASSES ---------- */
+.text-center {
+  text-align: center;
+}
+
+.mt-1 {
+  margin-top: 1rem;
+}
+
+.mt-2 {
+  margin-top: 2rem;
+}
+
+.mb-1 {
+  margin-bottom: 1rem;
+}
+
+.mb-2 {
+  margin-bottom: 2rem;
+}
+
+/* ---------- RESPONSIVE: TABLET & SMALL DESKTOP ---------- */
+@media (max-width: 768px) {
+  .tunnel-section {
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .tunnel-layout {
+    flex-direction: column;
+  }
+
+  .info-card {
+    flex: none;
+    width: 100%;
+  }
+
+  .tunnel-wrapper canvas {
+    height: auto;
+  }
+
+  .site-header {
+    padding: 2rem 1.5rem 3rem;
+  }
+
+  .site-title {
+    font-size: clamp(1.6rem, 5vw, 2.5rem);
+  }
+
+  .site-subtitle {
+    font-size: 1.1rem;
+  }
+
+  .tunnel-controls {
+    justify-content: center;
+  }
+
+  input[type="range"] {
+    width: 160px;
+  }
+
+  .recap-section {
+    padding: 1.5rem;
+  }
+
+  .recap-section h2 {
+    font-size: 1.6rem;
+  }
+
+  .legend-items {
+    gap: 1rem;
+  }
+}
+
+/* ---------- RESPONSIVE: MOBILE ---------- */
+@media (max-width: 480px) {
+  .site-header {
+    padding: 1.5rem 1rem 2.5rem;
+    border-radius: 0 0 28px 28px;
+  }
+
+  .site-title {
+    font-size: 1.6rem;
+    text-shadow: 2px 2px 0px #FF6B6B;
+  }
+
+  .site-subtitle {
+    font-size: 0.95rem;
+  }
+
+  main {
+    padding: 1rem 0.5rem;
+  }
+
+  .tunnel-section {
+    padding: 1rem;
+    border-radius: 16px;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .info-card {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .info-card h2 {
+    font-size: 1.4rem;
+  }
+
+  .info-card p {
+    font-size: 1rem;
+  }
+
+  .concept-badge {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .launch-btn {
+    padding: 10px 22px;
+    font-size: 1rem;
+  }
+
+  input[type="range"] {
+    width: 130px;
+    height: 10px;
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+  }
+
+  .speed-label {
+    font-size: 0.9rem;
+  }
+
+  .fun-fact {
+    padding: 0.75rem;
+  }
+
+  .recap-section {
+    padding: 1.25rem;
+    margin: 2rem auto;
+  }
+
+  .recap-section h2 {
+    font-size: 1.4rem;
+  }
+
+  .recap-section ul li {
+    font-size: 1rem;
+  }
+
+  .legend-card {
+    padding: 1rem;
+  }
+
+  .legend-items {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .site-footer {
+    padding: 1.5rem;
+    font-size: 0.9rem;
+  }
+}
