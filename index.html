@@ -6,231 +6,64 @@
   <title>Paper Airplane Wind Lab!</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- ============ HEADER ============ -->
-  <header class="site-header">
-    <div class="header-inner">
-      <h1 class="site-title">Paper Airplane Wind Lab!</h1>
-      <p class="site-subtitle">Discover how airplanes fly!</p>
-    </div>
+  <header class="header">
+    <h1>Paper Airplane Wind Lab!</h1>
+    <p>Watch the wind flow around each plane!</p>
   </header>
-
-  <!-- ============ LEGEND / KEY ============ -->
-  <aside class="legend">
-    <h2 class="legend-title">Wind Tunnel Key</h2>
-    <ul class="legend-list">
-      <li>
-        <span class="legend-swatch legend-swatch--wind"></span>
-        <span>Gray lines = moving wind</span>
-      </li>
-      <li>
-        <span class="legend-swatch legend-swatch--drag"></span>
-        <span>Red arrows = drag (slows the plane down)</span>
-      </li>
-      <li>
-        <span class="legend-swatch legend-swatch--lift"></span>
-        <span>Green arrows = lift (pushes the plane up)</span>
-      </li>
-      <li>
-        <span class="legend-swatch legend-swatch--plane"></span>
-        <span>Blue shape = your paper airplane</span>
-      </li>
-    </ul>
-  </aside>
 
   <main>
 
-    <!-- ======================================== -->
-    <!-- TUNNEL 1 — THE DART (LOW DRAG)           -->
-    <!-- ======================================== -->
-    <section id="section-dart" class="tunnel-section section-blue">
-      <div class="section-badge" aria-hidden="true">
-        <span class="badge-icon">💨</span>
-        <span class="badge-label">Low Drag</span>
-      </div>
-
-      <h2 class="section-heading">Tunnel 1: The Dart</h2>
-
-      <div class="tunnel-layout">
-        <!-- Left: Info Card -->
-        <div class="info-card">
-          <h3 class="info-card__name">The Dart</h3>
-          <p class="info-card__text">
-            The Dart is skinny and pointy! Air slides right past it &mdash;
-            that means <strong>LOW DRAG!</strong> It zooms super fast!
-          </p>
-          <div class="fun-fact">
-            <span class="fun-fact__icon" aria-hidden="true">🌟</span>
-            <p class="fun-fact__text">
-              <strong>Fun Fact:</strong> Real jet planes are pointy at the
-              front for the same reason &mdash; so air can slip around them!
-            </p>
-          </div>
+    <section class="tunnel-section section-blue">
+      <div class="tunnel-canvas-wrap">
+        <canvas id="tunnel-dart"></canvas>
+        <div class="tunnel-label">
+          <span class="label-name">The Dart</span>
+          <span class="label-concept">Low Drag - air slides past!</span>
         </div>
-
-        <!-- Right: Canvas + Controls -->
-        <div class="tunnel-wrapper">
-          <canvas id="tunnel-dart" width="600" height="350">
-            Your browser does not support canvas. Try a newer browser!
-          </canvas>
-
-          <div class="tunnel-controls">
-            <label for="speed-dart" class="speed-label">
-              Wind Speed: <span id="speed-dart-value" class="speed-value">3</span> 💨
-            </label>
-            <input
-              type="range"
-              id="speed-dart"
-              class="speed-slider"
-              min="1"
-              max="10"
-              value="3"
-            >
-            <button id="launch-dart" class="launch-btn">Launch! 🚀</button>
-          </div>
+        <div class="tunnel-controls">
+          <label>Wind <span id="speed-dart-value">3</span></label>
+          <input type="range" id="speed-dart" min="1" max="10" value="3">
+          <button id="launch-dart" class="launch-btn">Launch!</button>
         </div>
       </div>
     </section>
 
-    <!-- ======================================== -->
-    <!-- TUNNEL 2 — BIG WINGS (LIFT)              -->
-    <!-- ======================================== -->
-    <section id="section-glider" class="tunnel-section section-green">
-      <div class="section-badge" aria-hidden="true">
-        <span class="badge-icon">⬆️</span>
-        <span class="badge-label">Lift</span>
-      </div>
-
-      <h2 class="section-heading">Tunnel 2: Big Wings</h2>
-
-      <div class="tunnel-layout">
-        <!-- Left: Info Card -->
-        <div class="info-card">
-          <h3 class="info-card__name">Big Wings</h3>
-          <p class="info-card__text">
-            Big Wings has <strong>HUGE</strong> wings! When wind blows under
-            them, it pushes the plane <strong>UP</strong> &mdash; that's
-            called <strong>LIFT!</strong> Like a magic carpet ride!
-          </p>
-          <div class="fun-fact">
-            <span class="fun-fact__icon" aria-hidden="true">🌟</span>
-            <p class="fun-fact__text">
-              <strong>Fun Fact:</strong> Birds spread their wings wide to
-              catch more lift &mdash; just like this plane!
-            </p>
-          </div>
+    <section class="tunnel-section section-green">
+      <div class="tunnel-canvas-wrap">
+        <canvas id="tunnel-glider"></canvas>
+        <div class="tunnel-label">
+          <span class="label-name">Big Wings</span>
+          <span class="label-concept">Lift - wind pushes it up!</span>
         </div>
-
-        <!-- Right: Canvas + Controls -->
-        <div class="tunnel-wrapper">
-          <canvas id="tunnel-glider" width="600" height="350">
-            Your browser does not support canvas. Try a newer browser!
-          </canvas>
-
-          <div class="tunnel-controls">
-            <label for="speed-glider" class="speed-label">
-              Wind Speed: <span id="speed-glider-value" class="speed-value">3</span> 💨
-            </label>
-            <input
-              type="range"
-              id="speed-glider"
-              class="speed-slider"
-              min="1"
-              max="10"
-              value="3"
-            >
-            <button id="launch-glider" class="launch-btn">Launch! 🚀</button>
-          </div>
+        <div class="tunnel-controls">
+          <label>Wind <span id="speed-glider-value">3</span></label>
+          <input type="range" id="speed-glider" min="1" max="10" value="3">
+          <button id="launch-glider" class="launch-btn">Launch!</button>
         </div>
       </div>
     </section>
 
-    <!-- ======================================== -->
-    <!-- TUNNEL 3 — THE BRICK (HIGH DRAG)         -->
-    <!-- ======================================== -->
-    <section id="section-tumbler" class="tunnel-section section-red">
-      <div class="section-badge" aria-hidden="true">
-        <span class="badge-icon">🧱</span>
-        <span class="badge-label">High Drag</span>
-      </div>
-
-      <h2 class="section-heading">Tunnel 3: The Brick</h2>
-
-      <div class="tunnel-layout">
-        <!-- Left: Info Card -->
-        <div class="info-card">
-          <h3 class="info-card__name">The Brick</h3>
-          <p class="info-card__text">
-            The Brick is wide and flat in front! Air smashes right into it
-            &mdash; that's <strong>HIGH DRAG!</strong> It slows way down!
-          </p>
-          <div class="fun-fact">
-            <span class="fun-fact__icon" aria-hidden="true">🌟</span>
-            <p class="fun-fact__text">
-              <strong>Fun Fact:</strong> Parachutes use high drag on purpose
-              &mdash; they slow you down so you land safely!
-            </p>
-          </div>
+    <section class="tunnel-section section-red">
+      <div class="tunnel-canvas-wrap">
+        <canvas id="tunnel-tumbler"></canvas>
+        <div class="tunnel-label">
+          <span class="label-name">The Brick</span>
+          <span class="label-concept">High Drag - air smashes into it!</span>
         </div>
-
-        <!-- Right: Canvas + Controls -->
-        <div class="tunnel-wrapper">
-          <canvas id="tunnel-tumbler" width="600" height="350">
-            Your browser does not support canvas. Try a newer browser!
-          </canvas>
-
-          <div class="tunnel-controls">
-            <label for="speed-tumbler" class="speed-label">
-              Wind Speed: <span id="speed-tumbler-value" class="speed-value">3</span> 💨
-            </label>
-            <input
-              type="range"
-              id="speed-tumbler"
-              class="speed-slider"
-              min="1"
-              max="10"
-              value="3"
-            >
-            <button id="launch-tumbler" class="launch-btn">Launch! 🚀</button>
-          </div>
+        <div class="tunnel-controls">
+          <label>Wind <span id="speed-tumbler-value">3</span></label>
+          <input type="range" id="speed-tumbler" min="1" max="10" value="3">
+          <button id="launch-tumbler" class="launch-btn">Launch!</button>
         </div>
       </div>
-    </section>
-
-    <!-- ======================================== -->
-    <!-- RECAP — WHAT DID YOU LEARN?              -->
-    <!-- ======================================== -->
-    <section class="recap-section">
-      <h2 class="recap-title">What Did You Learn?</h2>
-      <ul class="recap-list">
-        <li>
-          <span class="recap-icon" aria-hidden="true">💨</span>
-          <strong>Drag</strong> is the push of air that slows things down.
-          Pointy shapes have less drag. Flat shapes have more!
-        </li>
-        <li>
-          <span class="recap-icon" aria-hidden="true">⬆️</span>
-          <strong>Lift</strong> is the push that makes planes go up.
-          Bigger wings catch more air and make more lift!
-        </li>
-        <li>
-          <span class="recap-icon" aria-hidden="true">✈️</span>
-          <strong>Shape matters!</strong> The way a plane is shaped changes
-          how it moves through the air. That's aerodynamics!
-        </li>
-      </ul>
     </section>
 
   </main>
-
-  <!-- ============ FOOTER ============ -->
-  <footer class="site-footer">
-    <p>Made for young scientists!</p>
-  </footer>
 
   <script src="app.js" defer></script>
 </body>
