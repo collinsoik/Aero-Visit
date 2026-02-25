@@ -399,9 +399,9 @@ class PaperAirplane {
     if (this.type === 'dart') {
       this.vx = 1.5;  this.vy = -0.1;
     } else if (this.type === 'glider') {
-      this.vx = 1.0;  this.vy = -0.15;
+      this.vx = 1.2;  this.vy = -0.8;  // strong upward throw for parabola
     } else {
-      this.vx = 0.9;  this.vy = 0;
+      this.vx = 1.6;  this.vy = 0;     // faster start, drag will slow it
     }
     this.angularVel = 0;
     this.launchTime = 0; // frame counter for time-based effects
@@ -425,27 +425,24 @@ class PaperAirplane {
         this.angle += this.angularVel;
         this.angle *= 0.95; // stabilizes quickly (streamlined)
       } else if (this.type === 'glider') {
-        // LIFT: climbs at first, then lift fades and it slowly descends
-        const drag = 0.005;
-        const liftFade = Math.max(0, 1 - this.launchTime / 300); // lift weakens over time
-        const lift = w * 0.28 * liftFade;
+        // PARABOLA: thrown upward, arcs up, peaks, then slowly comes back down
+        const drag = 0.003;
         this.vx -= drag * this.vx * Math.abs(this.vx);
-        this.vx += w * 0.04;
-        this.vy += gravity * 0.5;  // gravity is always there
-        this.vy -= lift;            // lift is strong early, fades out
-        this.vy *= 0.97;
-        this.angularVel = this.vy * 0.015;
+        this.vx += w * 0.03;
+        this.vy += gravity * 0.35; // steady gravity pulls it into a parabola
+        this.vy *= 0.995;          // very little damping so arc is smooth
+        this.angularVel = this.vy * 0.02; // nose tilts up on climb, down on descent
         this.angle += this.angularVel;
-        this.angle *= 0.93;
+        this.angle *= 0.94;
       } else {
-        // HIGH DRAG: gradual slowdown, gentle sag, wobbles build
-        const drag = 0.006;
+        // HIGH DRAG: goes far but steadily decelerates, minimal drop
+        const drag = 0.003;
         this.vx -= drag * this.vx * Math.abs(this.vx);
-        this.vx += w * 0.015;
-        this.vy += gravity * 0.3; // slow sag, not a plummet
-        this.vy *= 0.99;
-        this.angularVel += (Math.random() - 0.5) * 0.012 * (1 + w * 2);
-        this.angularVel *= 0.93;
+        this.vx += w * 0.008;
+        this.vy += gravity * 0.08; // barely sags
+        this.vy *= 0.995;
+        this.angularVel += (Math.random() - 0.5) * 0.008 * (1 + w);
+        this.angularVel *= 0.95;
         this.angle += this.angularVel;
       }
 
