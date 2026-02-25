@@ -397,11 +397,11 @@ class PaperAirplane {
     // Real physics: velocity, forces
     // Initial throw gives forward velocity
     if (this.type === 'dart') {
-      this.vx = 3.0;  this.vy = -0.2;
+      this.vx = 1.5;  this.vy = -0.1;
     } else if (this.type === 'glider') {
-      this.vx = 2.0;  this.vy = -0.3;
+      this.vx = 1.0;  this.vy = -0.15;
     } else {
-      this.vx = 1.8;  this.vy = 0;
+      this.vx = 0.9;  this.vy = 0;
     }
     this.angularVel = 0;
   }
@@ -450,7 +450,7 @@ class PaperAirplane {
       }
 
       // Minimum forward speed so it eventually crosses
-      if (this.vx < 0.4) this.vx = 0.4;
+      if (this.vx < 0.2) this.vx = 0.2;
 
       this.x += this.vx;
       this.y += this.vy;
@@ -499,7 +499,7 @@ class WindTunnel {
 
     this._applySize();
 
-    const cx = this.canvas._displayW * 0.38;
+    const cx = this.canvas._displayW * 0.15;
     const cy = this.canvas._displayH * 0.5;
     this.airplane = new PaperAirplane(type, cx, cy);
 
@@ -534,7 +534,7 @@ class WindTunnel {
 
   resize() {
     this._applySize();
-    this.airplane.homeX = this.canvas._displayW * 0.38;
+    this.airplane.homeX = this.canvas._displayW * 0.15;
     this.airplane.homeY = this.canvas._displayH * 0.5;
     if (!this.airplane.launched) {
       this.airplane.x = this.airplane.homeX;
