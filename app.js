@@ -424,28 +424,28 @@ class PaperAirplane {
         this.angle += this.angularVel;
         this.angle *= 0.95; // stabilizes quickly (streamlined)
       } else if (this.type === 'glider') {
-        // HIGH LIFT: wind under wings pushes up, climbs from low start
-        const drag = 0.004;
-        const lift = w * 0.25; // strong lift overcomes gravity
+        // HIGH LIFT: wind under wings pushes up, moderate drag
+        const drag = 0.006;
+        const lift = w * 0.18; // strong lift from wind
         this.vx -= drag * this.vx * Math.abs(this.vx);
         this.vx += w * 0.04;
-        this.vy += gravity * 0.6; // moderate gravity
-        this.vy -= lift;           // but strong lift wins!
-        this.vy *= 0.97;
+        this.vy += gravity; // gravity pulls down
+        this.vy -= lift;    // but lift pushes up!
+        this.vy *= 0.96;
         // Float up then gently descend as it moves through
         this.angularVel = this.vy * 0.015;
         this.angle += this.angularVel;
         this.angle *= 0.93;
       } else {
-        // HIGH DRAG: gradual slowdown, gentle sag, wobbles
-        const drag = 0.005;
+        // HIGH DRAG: massive slowdown, drops fast, wobbles hard
+        const drag = 0.02;
         this.vx -= drag * this.vx * Math.abs(this.vx);
-        this.vx += w * 0.01;
-        this.vy += gravity * 0.25; // very slow sag, not a drop
-        this.vy *= 0.99;
-        // Moderate wobble that builds over time
-        this.angularVel += (Math.random() - 0.5) * 0.008 * (1 + w * 2);
-        this.angularVel *= 0.94;
+        this.vx += w * 0.02; // wind barely helps
+        this.vy += gravity * 1.5; // heavy drop
+        this.vy *= 0.98;
+        // Chaotic wobble
+        this.angularVel += (Math.random() - 0.5) * 0.02 * (1 + w * 3);
+        this.angularVel *= 0.92;
         this.angle += this.angularVel;
       }
 
@@ -500,8 +500,7 @@ class WindTunnel {
     this._applySize();
 
     const cx = this.canvas._displayW * 0.15;
-    // Glider starts lower so lift is visible as it climbs
-    const cy = type === 'glider' ? this.canvas._displayH * 0.75 : this.canvas._displayH * 0.5;
+    const cy = this.canvas._displayH * 0.5;
     this.airplane = new PaperAirplane(type, cx, cy);
 
     // Create streamlines - rows of flow lines
@@ -536,7 +535,7 @@ class WindTunnel {
   resize() {
     this._applySize();
     this.airplane.homeX = this.canvas._displayW * 0.15;
-    this.airplane.homeY = this.type === 'glider' ? this.canvas._displayH * 0.75 : this.canvas._displayH * 0.5;
+    this.airplane.homeY = this.canvas._displayH * 0.5;
     if (!this.airplane.launched) {
       this.airplane.x = this.airplane.homeX;
       this.airplane.y = this.airplane.homeY;
