@@ -404,6 +404,7 @@ class PaperAirplane {
       this.vx = 0.9;  this.vy = 0;
     }
     this.angularVel = 0;
+    this.launchTime = 0; // frame counter for time-based effects
   }
 
   updateLaunch(windSpeed) {
@@ -424,34 +425,34 @@ class PaperAirplane {
         this.angle += this.angularVel;
         this.angle *= 0.95; // stabilizes quickly (streamlined)
       } else if (this.type === 'glider') {
-        // HIGH LIFT: wind under wings pushes up, moderate drag
-        const drag = 0.006;
-        const lift = w * 0.18; // strong lift from wind
+        // LIFT: climbs at first, then lift fades and it slowly descends
+        const drag = 0.005;
+        const liftFade = Math.max(0, 1 - this.launchTime / 300); // lift weakens over time
+        const lift = w * 0.28 * liftFade;
         this.vx -= drag * this.vx * Math.abs(this.vx);
         this.vx += w * 0.04;
-        this.vy += gravity; // gravity pulls down
-        this.vy -= lift;    // but lift pushes up!
-        this.vy *= 0.96;
-        // Float up then gently descend as it moves through
+        this.vy += gravity * 0.5;  // gravity is always there
+        this.vy -= lift;            // lift is strong early, fades out
+        this.vy *= 0.97;
         this.angularVel = this.vy * 0.015;
         this.angle += this.angularVel;
         this.angle *= 0.93;
       } else {
-        // HIGH DRAG: massive slowdown, drops fast, wobbles hard
-        const drag = 0.02;
+        // HIGH DRAG: gradual slowdown, gentle sag, wobbles build
+        const drag = 0.006;
         this.vx -= drag * this.vx * Math.abs(this.vx);
-        this.vx += w * 0.02; // wind barely helps
-        this.vy += gravity * 1.5; // heavy drop
-        this.vy *= 0.98;
-        // Chaotic wobble
-        this.angularVel += (Math.random() - 0.5) * 0.02 * (1 + w * 3);
-        this.angularVel *= 0.92;
+        this.vx += w * 0.015;
+        this.vy += gravity * 0.3; // slow sag, not a plummet
+        this.vy *= 0.99;
+        this.angularVel += (Math.random() - 0.5) * 0.012 * (1 + w * 2);
+        this.angularVel *= 0.93;
         this.angle += this.angularVel;
       }
 
       // Minimum forward speed so it eventually crosses
       if (this.vx < 0.2) this.vx = 0.2;
 
+      this.launchTime++;
       this.x += this.vx;
       this.y += this.vy;
 
