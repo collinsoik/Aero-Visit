@@ -525,7 +525,7 @@ class WindTunnel {
 
   _buildStreamlines() {
     const h = this.canvas._displayH || 420;
-    const count = 200;
+    const count = 350;
     this.streamlines = [];
     for (let i = 0; i < count; i++) {
       const y = 25 + Math.random() * (h - 50);
