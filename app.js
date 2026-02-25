@@ -14,14 +14,13 @@ class Streamline {
   }
 
   reset() {
-    const h = this.canvas._displayH || 350;
+    const w = this.canvas._displayW || 600;
     this.points = [];
-    this.x = -Math.random() * 80;
+    this.x = w + Math.random() * 80; // spawn on RIGHT edge
     this.y = this.baseY;
     this.opacity = 0.25 + Math.random() * 0.45;
     this.thickness = 1 + Math.random() * 2;
     this.speed = 0.8 + Math.random() * 1.2;
-    // Color will be set during draw based on deflection
     this.r = 120; this.g = 180; this.b = 255;
     this.maxPoints = 40 + Math.floor(Math.random() * 30);
   }
@@ -31,22 +30,23 @@ class Streamline {
     const w = this.canvas._displayW || 600;
     const h = this.canvas._displayH || 350;
 
-    // Advance head position
-    let dx = spd;
+    // Wind flows RIGHT-TO-LEFT (hitting the nose of the airplane)
+    let dx = -spd;
     let dy = 0;
 
     // Get airplane collision shape - tight to the body
     const px = plane.x, py = plane.y;
     const pw = plane.width * 0.55, ph = plane.height * 0.55;
-    const relX = this.x - px;
+    const relX = this.x - px; // positive = to the right of plane (incoming wind side)
     const relY = this.y - py;
     const dist = Math.sqrt(relX * relX + relY * relY);
     const inZone = Math.abs(relX) < pw && Math.abs(relY) < ph;
-    const approaching = relX < pw * 0.15 && relX > -pw * 0.6;
+    // "approaching" = wind coming from the right toward the nose
+    const approaching = relX > -pw * 0.15 && relX < pw * 0.6;
     const nearBody = Math.abs(relY) < ph * 0.7;
 
     if (type === 'dart') {
-      // LAMINAR FLOW - tight smooth deflection around narrow body
+      // LAMINAR FLOW - tight smooth deflection, wind hits pointy nose
       if (inZone || (approaching && nearBody)) {
         const deflectRadius = pw * 0.45;
         if (dist < deflectRadius && dist > 0) {
@@ -54,14 +54,15 @@ class Streamline {
           dy += (relY > 0 ? 1 : -1) * pushStrength * spd;
           dx *= 0.8;
         }
-        if (relX > 0) dx *= 1.1;
+        // Speed up past the tail (left side)
+        if (relX < 0) dx *= 1.1;
         this.r = 100; this.g = 200; this.b = 255;
       } else {
         this.r = 120; this.g = 180; this.b = 255;
       }
 
     } else if (type === 'glider') {
-      // LIFT FLOW - tight to the wide wings
+      // LIFT FLOW - wind hits wide wings from the right
       const wingSpan = ph * 0.7;
       const nearWings = Math.abs(relX) < pw * 0.5 && Math.abs(relY) < wingSpan;
 
@@ -70,6 +71,7 @@ class Streamline {
         if (dist < deflectRadius && dist > 0) {
           const pushStrength = (1 - dist / deflectRadius) * 4;
           if (relY > 0) {
+            // Below wings: strong upward deflection (LIFT!)
             dy -= pushStrength * spd * 1.4;
             this.r = 50; this.g = 230; this.b = 100;
           } else {
@@ -78,7 +80,8 @@ class Streamline {
           }
           dx *= 0.75;
         }
-        if (relX > pw * 0.15) {
+        // Upwash past trailing edge (left side of plane)
+        if (relX < -pw * 0.15) {
           dy -= 0.3 * spd;
           this.r = 80; this.g = 220; this.b = 120;
         }
@@ -87,17 +90,20 @@ class Streamline {
       }
 
     } else if (type === 'tumbler') {
-      // HIGH DRAG - tight pile-up right at the blunt face
+      // HIGH DRAG - wind smashes into the blunt nose from the right
       const bluntRadius = Math.max(pw, ph) * 0.7;
-      const nearFront = relX > -pw * 0.6 && relX < pw * 0.25;
+      // "nearFront" = right side of the plane where the blunt face is
+      const nearFront = relX < pw * 0.6 && relX > -pw * 0.25;
 
       if ((nearFront && nearBody) || dist < bluntRadius) {
-        if (relX < 0) {
+        if (relX > 0) {
+          // In front of the nose: PILE UP, slow way down
           dx *= 0.15;
           const scatter = (1 - dist / bluntRadius) * 5;
           dy += (relY > 0 ? 1 : -1) * scatter * spd;
           this.r = 255; this.g = 100; this.b = 60;
         } else {
+          // Behind (wake): turbulent chaos
           dx *= 0.5;
           dy += (Math.sin(performance.now() / 80 + this.baseY * 0.1) * 3 +
                  (Math.random() - 0.5) * 4) * (windSpeed / 5);
@@ -119,9 +125,9 @@ class Streamline {
     this.points.push({ x: this.x, y: this.y, r: this.r, g: this.g, b: this.b });
     if (this.points.length > this.maxPoints) this.points.shift();
 
-    // Reset when off right edge
-    if (this.x > w + 20) {
-      this.x = -Math.random() * 40;
+    // Reset when off LEFT edge (wind exits left)
+    if (this.x < -20) {
+      this.x = w + Math.random() * 40;
       this.y = this.baseY;
       this.points = [];
     }
