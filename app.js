@@ -59,7 +59,7 @@ class Streamline {
         this.r = 120; this.g = 180; this.b = 255;
       }
 
-    } else if (type === 'glider') {
+    } else if (type === 'glide') {
       const wingSpan = ph * 0.8;
       const nearWings = Math.abs(relX) < pw * 0.6 && Math.abs(relY) < wingSpan;
 
@@ -84,7 +84,7 @@ class Streamline {
         this.r = 120; this.g = 180; this.b = 255;
       }
 
-    } else if (type === 'tumbler') {
+    } else if (type === 'flatline') {
       const bluntRadius = Math.max(pw, ph) * 0.75;
       const nearFront = relX < pw * 0.7 && relX > -pw * 0.3;
 
@@ -163,7 +163,7 @@ class PaperAirplane {
     this.scale = 2.2; // big and close-up
 
     if (type === 'dart')        { this.width = 90; this.height = 28; }
-    else if (type === 'glider') { this.width = 55; this.height = 110; }
+    else if (type === 'glide') { this.width = 55; this.height = 110; }
     else                        { this.width = 55; this.height = 65; }
   }
 
@@ -199,7 +199,7 @@ class PaperAirplane {
     ctx.setLineDash([]);
   }
 
-  _drawGlider(ctx) {
+  _drawGlide(ctx) {
     ctx.beginPath();
     ctx.moveTo(28, 0);
     ctx.lineTo(5, -52);
@@ -232,7 +232,7 @@ class PaperAirplane {
     ctx.setLineDash([]);
   }
 
-  _drawTumbler(ctx) {
+  _drawFlatline(ctx) {
     ctx.beginPath();
     ctx.moveTo(18, 0);
     ctx.lineTo(12, -22);
@@ -294,15 +294,15 @@ class PaperAirplane {
     ctx.globalAlpha = 0.18;
     ctx.fillStyle = '#000';
     ctx.beginPath();
-    const rx = this.type === 'dart' ? 38 : this.type === 'glider' ? 30 : 24;
-    const ry = this.type === 'dart' ? 10 : this.type === 'glider' ? 34 : 22;
+    const rx = this.type === 'dart' ? 38 : this.type === 'glide' ? 30 : 24;
+    const ry = this.type === 'dart' ? 10 : this.type === 'glide' ? 34 : 22;
     ctx.ellipse(0, 0, rx, ry, 0, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
 
     if (this.type === 'dart') this._drawDart(ctx);
-    else if (this.type === 'glider') this._drawGlider(ctx);
-    else this._drawTumbler(ctx);
+    else if (this.type === 'glide') this._drawGlide(ctx);
+    else if (this.type === 'flatline') this._drawFlatline(ctx);
 
     ctx.restore();
   }
@@ -315,7 +315,7 @@ class PaperAirplane {
       this.angle = Math.sin(t * 1.2) * 0.008 * windSpeed;
       this.x = this.homeX + Math.sin(t * 0.5) * 1;
       this.y = this.homeY + Math.sin(t * 0.7) * 0.6;
-    } else if (this.type === 'glider') {
+    } else if (this.type === 'glide') {
       this.angle = -0.03 * w + Math.sin(t * 0.4) * 0.01;
       this.x = this.homeX + Math.sin(t * 0.3) * 1;
       this.y = this.homeY - windSpeed * 1.5 + Math.sin(t * 0.5) * 1.5;
@@ -445,9 +445,9 @@ class WindTunnel {
 // ──────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
   const dart = new WindTunnel('tunnel-dart', 'dart');
-  const glider = new WindTunnel('tunnel-glider', 'glider');
-  const tumbler = new WindTunnel('tunnel-tumbler', 'tumbler');
-  const all = [dart, glider, tumbler].filter(t => t.canvas);
+  const glide = new WindTunnel('tunnel-glide', 'glide');
+  const flatline = new WindTunnel('tunnel-flatline', 'flatline');
+  const all = [dart, glide, flatline].filter(t => t.canvas);
 
   all.forEach(t => {
     t.canvas.addEventListener('mouseenter', () => t.hovered = true);
